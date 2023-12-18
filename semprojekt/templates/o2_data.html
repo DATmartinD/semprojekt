@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Oxygen Data</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('oxygenChart').getContext('2d');
+            var oxygenChart = new Chart(ctx, {
+                type: 'line',  // Example: a line chart
+                data: {
+                    labels: [],  // We will update labels with timestamps or interval count
+                    datasets: [{
+                        label: 'Oxygen Concentration',
+                        data: [],  // Data points go here
+                        borderColor: 'red',
+                        backgroundColor: 'pink',
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+    
+            function updateO2() {
+                fetch('/get_latest_o2')
+                    .then(response => response.json())
+                    .then(data => {
+                        const now = new Date();
+                        pulseChart.data.labels.push(now.toLocaleTimeString());
+                        pulseChart.data.datasets[0].data.push(data.o2);
+                        pulseChart.update();
+                        document.getElementById('latest-o2').innerText = 'Latest O2 Concentration: ' + data.o2;
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+    
+            setInterval(updateO2, 15000);  // Update every 15 seconds
+            updateO2();  // Initial update on page load
+        });
+    </script>
+
+</head>
+<body>
+    <div class="back-button">
+        <a href="/">Back to Control Panel</a>
+    </div>
+    <div class="main-content">
+        <h1>Live O2 Concentration Data</h1>
+        <!-- Placeholder for pulse data -->
+        <p id="latest-o2">Latest O2 Concentration: Loading...</p>
+        <div style="width: 1200px; height: 600px; margin: auto;">
+            <canvas id="oxygenChart"></canvas>
+        </div>
+    </div>
+</body>
+</html>

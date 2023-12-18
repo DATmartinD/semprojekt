@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monitoring System</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Control Panel</a></li>
+                <!-- Add other navigation links if needed -->
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="button-container">
+            <a href="/gps" class="data-button">Live GPS Data</a>
+            <a href="/pulse" class="data-button">Live Pulse Data</a>
+            <a href="/o2" class="data-button">Live O2 Data</a>
+        </div>
+        <div class="button-container">
+            <a href="/alarm" class="data-button">ALARM</a>
+        </div>
+    </main>
+</body>
+</html>

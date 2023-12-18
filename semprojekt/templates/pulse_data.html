@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pulse Data</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('pulseChart').getContext('2d');
+            var pulseChart = new Chart(ctx, {
+                type: 'line',  // Example: a line chart
+                data: {
+                    labels: [],  // We will update labels with timestamps or interval count
+                    datasets: [{
+                        label: 'Pulse',
+                        data: [],  // Data points go here
+                        borderColor: 'red',
+                        backgroundColor: 'pink',
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+    
+            function updatePulse() {
+                fetch('/get_latest_pulse')
+                    .then(response => response.json())
+                    .then(data => {
+                        const now = new Date();
+                        pulseChart.data.labels.push(now.toLocaleTimeString());
+                        pulseChart.data.datasets[0].data.push(data.pulse);
+                        pulseChart.update();
+                        document.getElementById('latest-pulse').innerText = 'Latest Pulse: ' + data.pulse;
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+    
+            setInterval(updatePulse, 15000);  // Update every 15 seconds
+            updatePulse();  // Initial update on page load
+        });
+    </script>
+
+</head>
+<body>
+    <div class="back-button">
+        <a href="/">Back to Control Panel</a>
+    </div>
+    <div class="main-content">
+        <h1>Live Pulse Data</h1>
+        <!-- Placeholder for pulse data -->
+        <p id="latest-pulse">Latest Pulse: Loading...</p>
+        <div style="width: 1200px; height: 600px; margin: auto;">
+            <canvas id="pulseChart"></canvas>
+        </div>
+    </div>
+</body>
+</html>

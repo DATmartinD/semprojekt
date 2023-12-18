@@ -1,0 +1,3 @@
+pip install micropython-max30102
+
+pip install pyserial pynmea2
